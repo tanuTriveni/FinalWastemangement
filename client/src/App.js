@@ -13,6 +13,8 @@ import PublicRoute from "./components/PublicRoute";
 import Apply from "./pages/Apply";
 import NotificationPage from "./pages/NotificationPage";
 import Profile from "./pages/collector/Profile";
+import EwasteCollection from "./pages/EwasteCollection";
+import BookCollectorforuser from "./pages/admin/BookCollectorforuser";
 
 function App() {
   const { loading } = useSelector(state => state.alerts);
@@ -40,6 +42,7 @@ function App() {
                 </Protectedroutes>
               }
             />
+
              <Route
               path="/admin/collector"
               element={
@@ -48,11 +51,28 @@ function App() {
                 </Protectedroutes>
               }
             />
+            
+            <Route
+              path="/admin/allocatecollector"
+              element={
+                <Protectedroutes>
+            <BookCollectorforuser></BookCollectorforuser>
+                </Protectedroutes>
+              }
+            />
              <Route
               path="/apply-collection"
               element={
                 <Protectedroutes>
                <Apply></Apply>
+                </Protectedroutes>
+              }
+            />
+             <Route
+              path="/ewaste-collection"
+              element={
+                <Protectedroutes>
+             <EwasteCollection></EwasteCollection>
                 </Protectedroutes>
               }
             />

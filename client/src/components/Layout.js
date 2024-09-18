@@ -61,7 +61,7 @@ const SidebarMenu=user?.isAdmin?adminMenu:user?.isCollector?CollectorMenu:UsersM
       {SidebarMenu.map(menu =>{
         return(
           <>
-          <div className='menu-item'>
+          <div className='menu-item' style={  {'overflow-y': 'auto'}}>
           <i className={menu.icon}></i>
           <Link to={menu.path} className='menu-link'>{menu.name}</Link></div>
           </>
@@ -88,7 +88,7 @@ onClick={()=>{Navigate('/notification')}}
   <Link to="/profile">{user?.name}</Link>
 </div>
 </div>
-<div className="body">{children}</div>
+<div className="body" style={  {'overflow-y': 'auto'}}>{children}</div>
 
 </div>
     </div>

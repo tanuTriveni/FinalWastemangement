@@ -19,7 +19,7 @@ const NotificationPage = () => {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
-            dispatch(hideLoading());
+        
             if (res.data.message) {
                 message.success(res.data.message);
             } else {
@@ -88,12 +88,20 @@ else {
                         
                         onClick={handleDeleteAllRead} style={{ cursor: 'pointer' }}>Delete All Read</h4>
                     </div>
-                    {
+                    { 
                         user?.seennotification.map((notificationMgs) => (
-                            <div className='card' style={{ cursor: "pointer" }} key={notificationMgs.id}>
-                                <div className='card-text' onClick={() => navigate(notificationMgs.onClickPath)}>
+                            <div className='card' style={{ cursor: "pointer" }} key={notificationMgs.data.id}>
+                                <div className='card-text' onClick={() =>
+                                 
+                               
+                                 navigate(notificationMgs.data.onClickPath, {
+                                    state: { id: notificationMgs.data.userId },
+                                  })
+                                  }>
                                     {notificationMgs.message}
                                 </div>
+
+                                
                             </div>
                         ))
                     }

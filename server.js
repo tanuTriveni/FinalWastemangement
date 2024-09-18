@@ -30,7 +30,7 @@ const port = process.env.PORT || 8000
 //routees
 app.use("/api/v1/user", require("./routes/userRoutes"))
 app.use("/api/v1/admin", require("./routes/adminRoutes"));
-app.use("/api/v1/collector", require("./routes/collectorroutes"))
+app.use("/api/v1/collector", require("./routes/collectorroutes"));
 
 app.listen(port, () => {
     console.log(`server running in ${process.env.NODE_MODE} MOde on port ${port}`.bgCyan.white)

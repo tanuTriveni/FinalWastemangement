@@ -1,73 +1,82 @@
-import React from 'react'
-// import { useState } from 'react';
-// import { Form, Link, useNavigate } from 'react-router-dom';
+import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import '../styles/RegisterStyles.css'
+import '../styles/RegisterStyles.css';
 import { Form, Input, message, Button } from "antd";
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../redux/feautres/alertSlice';
 
-
 function Register() {
-
-
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const onFinishHandler = async (values) => {
-
         try {
-            dispatch(showLoading())
-            console.log(values);
-            const res = await axios.post('api/v1/user/register', values)
-            dispatch(hideLoading())
+            dispatch(showLoading());
 
-            if (res.data.success) {
-                message.success("register Successfully");
-                navigate("/login")
-            }
-            else {
-                message.error(res.data.message);
+            // Capture the user's location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Add location coordinates to the form values
+                        values.location = { latitude, longitude };
+
+                        // Make the API call to register the user
+                        const res = await axios.post('api/v1/user/register', values);
+                        dispatch(hideLoading());
+
+                        if (res.data.success) {
+                            message.success("Registered Successfully");
+                            navigate("/login");
+                        } else {
+                            message.error(res.data.message);
+                        }
+                    },
+                    (error) => {
+                        console.log(`Error: ${error.message}`);
+                        dispatch(hideLoading());
+                        message.error("Failed to retrieve location.");
+                    }
+                );
+            } else {
+                message.error("Geolocation is not supported by this browser.");
+                dispatch(hideLoading());
             }
         } catch (error) {
-            dispatch(hideLoading())
+            dispatch(hideLoading());
             console.log(error);
-            message.error("Something Went wrong");
+            message.error("Something went wrong.");
         }
+    };
 
-
-
-
-
-
-    }
-    return (<>
+    return (
         <div className="form-container">
-
             <Form layout="vertical" onFinish={onFinishHandler} className='card p-4'>
-
-                <h3 className="text-center">Register From</h3>
+                <h3 className="text-center">Register Form</h3>
                 <Form.Item label="Name" name="name">
                     <Input type="text" required />
                 </Form.Item>
                 <Form.Item label="Email" name="email">
                     <Input type="email" required />
                 </Form.Item>
-
+                <Form.Item label="Address" name="address">
+                    <Input type="text" required />
+                </Form.Item>
                 <Form.Item label="Password" name="password">
                     <Input type="password" required />
                 </Form.Item>
-                <Link to="/login" className="m-5">Already a user login here</Link>
-                <button type="btn btn-primary">Register</button>
-
-
+                <Link to="/login" className="m-5">Already a user? Login here</Link>
+                <Button type="primary" htmlType="submit">Register</Button>
             </Form>
         </div>
-
-
-    </>)
+    );
 }
+
 export default Register;
+
 
 //redux information
 // In summary, Redux provides a structured and scalable way to manage the state of a JavaScript application. It addresses common challenges in state management by promoting a single source of truth, a predictable state flow, and a separation of concerns. While it adds some boilerplate code, its benefits become more apparent as applications grow in size and complexity. It has become a popular choice for state management in the React ecosystem and beyond.

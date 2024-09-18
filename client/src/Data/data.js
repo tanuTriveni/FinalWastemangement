@@ -21,6 +21,11 @@ export const UsersMenu =[
         icon:'fa-solid fa-user',
     },
     {
+        name:'E-waste collection',
+        path:`/ewaste-collection`,
+        icon:'fa-solid fa-recycle',
+    },
+    {
         name:'Logout',
         path:"/logout",
         icon:'fa-solid fa-right-from-bracket'
@@ -44,12 +49,18 @@ export const adminMenu =[
     ,{
         name:'Users',
         path:'/admin/user',
-        icon:'fa-solid fa-user',
+        icon:'fa-solid fa-users',
+       
     },
     {
         name:'Profile',
         path:'/profile',
         icon:'fa-solid fa-user',
     },
+    {
+        name:'Booking request',
+        path:'/admin/allocatecollector',
+        icon:'fa-solid fa-file-invoice',
+    }
  
 ]

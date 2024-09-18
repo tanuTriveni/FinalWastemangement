@@ -4,24 +4,16 @@ const bcrypt =require('bcryptjs')
 const collectormodel=require('../models/CollectorModel')
 const  jwt = require ('jsonwebtoken') 
 
-const getAllCollector=async()=>{
-  try{
-const collector = await collectorModel.find({status:"approved"})
-res.status(200).send({
-  success:true, 
-  message:"All collector fetched successfully",
-  data :collector,  
-})
-  }
-  catch(error){
-    console.log(error)
-    res.status(500).send({
-      success:false,
-      error,
-      message:"Error while fetcing the data"
-    })
-  }
-}
+
+
+
+
+
+
+
+
+
+
 const registerController=async (req, res)=>{
 try{
     const existinguser =await userModel.findOne({email:req.body.email});
@@ -98,6 +90,15 @@ const authCntroller = async (req, res) => {
 
   const applyCollectorController = async (req, res) => {
     try {
+
+      const { location, address } = req.body;
+      if (!location || !address) {
+        return res.status(400).send({
+          success: false,
+          message: 'Location and address are required fields'
+        });
+      }
+
       // Create a new collector with status 'pending'
       const newCollector = new collectormodel({
         ...req.body,
@@ -197,6 +198,76 @@ catch(error){
 })
   }
 }
+const getthenearesCollectornotfication= async (req, res)=>{
 
+
+  try{
+  const {id}= req;
+  const user = await userModel.findOne({ _id: req.body.userId });
+console.log(user.location);
+
+const adminUser = await userModel.findOne({ isAdmin: true });
+if (!adminUser) {
+  return res.status(404).send({
+    success: false,
+    message: 'Admin user not found'
+  });
+}
+
+
+const notification = adminUser.notification;
+notification.push({
+  type: 'book-collector-request',
+  message: `${user.name} has requested the booking of a collector .`,
+  data: {
+    userId: user._id,
+    name: `${user.name} `,
+    onClickPath: '/admin/allocatecollector'
+  }
+});
+
+// Save the updated notifications
+await userModel.findByIdAndUpdate(adminUser._id, { notification });
+
+}
+catch(error){
+  console.error(error); // Log the error for server-side debugging
+    
+    // Sending error response
+    res.status(500).send({
+      success: false,
+      message: "Error while fetching the data",
+      error: error.message, // Send only the error message, not the whole error object
+    });
+}
+  // const newUser= await userModel.findOne({})
+
+}
+
+const getAllCollector = async (req, res) => {
+  try {
+    const collectors = await collectormodel.find({ status: "approved" });
+    console.log(collectors);
+    // Sending success response
+    res.status(200).send({
+      success: true,
+      message: "All collectors fetched successfully",
+      data: collectors,  
+    });
+
+
+
+
+  } catch (error) {
+    console.error(error); // Log the error for server-side debugging
+    
+    // Sending error response
+    res.status(500).send({
+      success: false,
+      message: "Error while fetching the data",
+      error: error.message, // Send only the error message, not the whole error object
+    });
+  }
+};
 module.exports ={loginController,applyCollectorController,registerController,getALLNotificationController,
-  deleteALLNotificationController,authCntroller,getAllCollector}
+  deleteALLNotificationController,authCntroller,getAllCollector,getthenearesCollectornotfication}

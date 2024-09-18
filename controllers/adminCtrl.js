@@ -20,6 +20,55 @@ const getAllUserseController= async(req, res)=>{
     });
   }
 }
+
+const book=async(req, res)=>{
+  try {
+          
+
+
+ 
+
+    const user =await userModel.findById(req.body.values)
+    
+    const userCoordinates = [user.location.longitude, user.location.latitude];
+    console.log(userCoordinates)
+    const nearcollector =await collectormodel.findOne({
+      location: {
+        $near: {
+            $geometry: {
+                type: 'Point',
+                coordinates: userCoordinates
+            },
+           // Optional: Limit search to within 5km radius
+        }
+    }
+
+    })
+console.log(user)
+console.log(nearcollector)  
+    if (!nearcollector) {
+      throw new Error('No collectors found nearby');
+  }
+res.status(200).send({
+  suceess:true,
+  message:"booked successfully",
+  data:nearcollector,
+
+})
+
+  }
+  catch (error) {
+   console.log(error)
+        res.status(500).send({
+            success:false,
+            message:'erro while fetching users',
+            error
+        })
+  }
+}
+
+
+
 const getAllCollectorsController=async(req,res)=>{
     try{
         const collector=await collectormodel.find({})
@@ -69,4 +118,4 @@ catch(error){
             message:'erro in account status',
             error
         })}}
-module.exports={getAllCollectorsController, getAllUserseController, changeAccountStatus}
+module.exports={getAllCollectorsController, getAllUserseController, changeAccountStatus,book}

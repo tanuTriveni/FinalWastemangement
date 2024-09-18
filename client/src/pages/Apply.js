@@ -15,6 +15,19 @@ export const Apply = () => {
 
     try {
       dispatch(showLoading())
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                // Add location coordinates to the form values
+                values.location = { latitude, longitude };
+
+
+
+      
       const res = await axios.post("/api/v1/user/apply-collection", { ...values, userId: user._id },
         {
           headers: {
@@ -31,7 +44,17 @@ export const Apply = () => {
       }
       else {
         message.error(res.data.success);
-      }
+      }},
+      (error) => {
+        console.log(`Error: ${error.message}`);
+        dispatch(hideLoading());
+        message.error("Failed to retrieve location.");
+    }
+);
+} else {
+message.error("Geolocation is not supported by this browser.");
+dispatch(hideLoading());
+}
     }
     catch (error) {
       dispatch(hideLoading())
